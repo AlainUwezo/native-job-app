@@ -1,78 +1,81 @@
 import { Text } from "@rneui/themed";
-import { Image, ScrollView, StyleSheet } from "react-native";
+import { Image, Pressable, ScrollView, StyleSheet } from "react-native";
 import { View } from "react-native";
 import { useTheme } from "../../theme/ThemeProvider";
 import TwoLineTruncateText from "./TwoLineTuncateText";
 import JobDetailTitle from "./JobDetailTitle";
 
-const JobCard = ({ company, title, description, details }) => {
+const JobCard = ({ company, title, description, details, style, onPress }) => {
   const { theme } = useTheme();
   return (
-    <View
-      style={[
-        styles.container,
-        {
-          borderColor: theme.colors.backgroundSecondary,
-        },
-      ]}
-    >
-      <View style={styles.titleContainer}>
-        <View
-          style={[
-            styles.logoContainer,
-            {
-              backgroundColor: theme.colors.primary100,
-            },
-          ]}
-        >
-          <Image
-            source={require("./../../assets/images/twitter.png")}
-            style={styles.logo}
-          />
-        </View>
-        <View>
-          <Text
+    <Pressable onPress={onPress}>
+      <View
+        style={[
+          styles.container,
+          {
+            borderColor: theme.colors.backgroundSecondary,
+          },
+          style,
+        ]}
+      >
+        <View style={styles.titleContainer}>
+          <View
             style={[
-              styles.company,
+              styles.logoContainer,
               {
-                color: theme.colors.text700,
+                backgroundColor: theme.colors.primary100,
               },
             ]}
           >
-            {company}
-          </Text>
-          <Text style={styles.title}>{title}</Text>
+            <Image
+              source={require("./../../assets/images/twitter.png")}
+              style={styles.logo}
+            />
+          </View>
+          <View>
+            <Text
+              style={[
+                styles.company,
+                {
+                  color: theme.colors.text700,
+                },
+              ]}
+            >
+              {company}
+            </Text>
+            <Text style={styles.title}>{title}</Text>
+          </View>
         </View>
-      </View>
-      <View style={styles.description}>
-        <TwoLineTruncateText
-          textStyle={{
-            color: theme.colors.text500,
-          }}
-        >
-          {description}
-        </TwoLineTruncateText>
-      </View>
-      <ScrollView
-        horizontal
-        alwaysBounceHorizontal={false}
-        showsHorizontalScrollIndicator={false}
-      >
-        <View
-          style={[
-            styles.details,
-            {
-              borderTopColor: theme.colors.backgroundSecondary,
-            },
-          ]}
-        >
-          {details &&
-            details.map((detail, index) => (
-              <JobDetailTitle key={detail + index} title={detail} />
-            ))}
+        <View style={styles.description}>
+          <TwoLineTruncateText
+            textStyle={{
+              color: theme.colors.text500,
+            }}
+          >
+            {description}
+          </TwoLineTruncateText>
         </View>
-      </ScrollView>
-    </View>
+        <ScrollView
+          horizontal
+          alwaysBounceHorizontal={false}
+          showsHorizontalScrollIndicator={false}
+        >
+          <View
+            style={[
+              styles.details,
+              {
+                borderTopColor: theme.colors.backgroundSecondary,
+              },
+            ]}
+          >
+            {details &&
+              details.map((detail, index) => (
+                <JobDetailTitle key={detail + index} title={detail} />
+              ))}
+          </View>
+        </ScrollView>
+      </View>
+    </Pressable>
   );
 };
 

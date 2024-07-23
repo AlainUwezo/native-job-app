@@ -34,7 +34,8 @@ const WorkRecommandation = () => {
         <FlatList
           data={JOBS}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <JobCard {...item} />}
+          alwaysBounceVertical={false}
+          renderItem={({ item }) => <JobCard {...item} style={styles.job} />}
         />
       </View>
     </View>
@@ -56,6 +57,9 @@ const styles = StyleSheet.create({
   jobs: {
     paddingVertical: 24,
     gap: 24,
+  },
+  job: {
+    marginBottom: 24,
   },
 });
 

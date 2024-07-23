@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, View } from "react-native";
+import { Dimensions, ScrollView, StyleSheet, View } from "react-native";
 import { JobSearchCard, WorkRecommandation } from "../../features/explore";
 import { StatusBar } from "expo-status-bar";
 import { useTheme } from "../../theme/ThemeProvider";
@@ -12,11 +12,20 @@ const ExploreScreen = () => {
     >
       <StatusBar style="auto" />
       <ScrollView
+        nestedScrollEnabled={true}
         alwaysBounceVertical={false}
         showsVerticalScrollIndicator={false}
       >
         <JobSearchCard />
-        <WorkRecommandation />
+        <ScrollView
+          horizontal={true}
+          alwaysBounceVertical={false}
+          alwaysBounceHorizontal={false}
+        >
+          <View style={{ width: Dimensions.get("window").width }}>
+            <WorkRecommandation />
+          </View>
+        </ScrollView>
       </ScrollView>
     </View>
   );

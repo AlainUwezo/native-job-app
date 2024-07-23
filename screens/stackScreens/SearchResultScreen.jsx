@@ -1,9 +1,15 @@
-import { View, StyleSheet, ScrollView, RefreshControl } from "react-native";
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  RefreshControl,
+  Dimensions,
+} from "react-native";
 import { SearchFilter, SearchResultList } from "../../features/searchResult";
 import { useTheme } from "../../theme/ThemeProvider";
 import { useCallback, useState } from "react";
 
-const SearchResult = () => {
+const SearchResultScreen = () => {
   const { theme } = useTheme();
   const [refreshing, setRefreshing] = useState(false);
 
@@ -27,6 +33,7 @@ const SearchResult = () => {
       <View>
         <SearchFilter />
         <ScrollView
+          nestedScrollEnabled={false}
           style={styles.resultList}
           showsVerticalScrollIndicator={false}
           refreshControl={
@@ -39,7 +46,15 @@ const SearchResult = () => {
           }
           contentContainerStyle={styles.scrollViewContent}
         >
-          <SearchResultList />
+          <ScrollView
+            horizontal={true}
+            alwaysBounceVertical={false}
+            alwaysBounceHorizontal={false}
+          >
+            <View style={{ width: Dimensions.get("window").width }}>
+              <SearchResultList />
+            </View>
+          </ScrollView>
         </ScrollView>
       </View>
     </View>
@@ -55,4 +70,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SearchResult;
+export default SearchResultScreen;

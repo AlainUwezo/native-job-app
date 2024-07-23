@@ -3,9 +3,15 @@ import { FlatList, StyleSheet, View } from "react-native";
 import { useTheme } from "../../theme/ThemeProvider";
 import { JOBS } from "../../data/mockData";
 import { JobCard } from "../../components/common";
+import { useNavigation } from "@react-navigation/native";
 
 const SearchResultList = () => {
   const { theme } = useTheme();
+  const navigation = useNavigation();
+
+  const detailJobHandler = () => {
+    navigation.navigate("JobDetail");
+  };
 
   return (
     <View style={styles.container}>
@@ -24,9 +30,12 @@ const SearchResultList = () => {
       </Text>
       <View style={styles.jobs}>
         <FlatList
+          alwaysBounceVertical={false}
           data={JOBS}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <JobCard {...item} />}
+          renderItem={({ item }) => (
+            <JobCard onPress={detailJobHandler} {...item} style={styles.job} />
+          )}
         />
       </View>
     </View>
@@ -48,6 +57,9 @@ const styles = StyleSheet.create({
   },
   jobs: {
     paddingVertical: 24,
+  },
+  job: {
+    marginBottom: 24,
   },
 });
 

@@ -174,6 +174,7 @@ const pickerSelectStyles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 10,
     color: "#333",
+    minWidth: 1000,
   },
   inputAndroid: {
     flex: 1,
@@ -181,6 +182,7 @@ const pickerSelectStyles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 10,
     color: "#333",
+    minWidth: 1000,
   },
   iconContainer: {
     top: Platform.OS === "android" ? 8 : 10,
