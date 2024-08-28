@@ -1,43 +1,97 @@
-import { Button } from "@rneui/themed";
+import { Button, Text } from "@rneui/themed";
 import {
   JobInformations,
   JobOverview,
 } from "../../features/jobDetail/components";
 import { useTheme } from "../../theme/ThemeProvider";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { getOfferById } from "../../data-fetching/dataReading";
 
-const { View, StyleSheet, ScrollView, Dimensions } = require("react-native");
+const {
+  View,
+  StyleSheet,
+  ScrollView,
+  Dimensions,
+  ActivityIndicator,
+} = require("react-native");
 
 const JobDetailScreen = () => {
   const { theme } = useTheme();
   const [index, setIndex] = useState(0);
+  const route = useRoute();
+  const { offerId } = route.params;
+  const [offer, setOffer] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    let isCanceled = false;
+    const fetchOffer = async () => {
+      if (isCanceled) return;
+      try {
+        const data = await getOfferById(offerId);
+        setOffer(data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOffer();
+
+    return () => {
+      isCanceled = true;
+    };
+  }, [offerId]);
+
+  const onApplicationHandler = () => {
+    navigation.navigate("CandidateFormScreen", {
+      offerId: offer.id,
+    });
+  };
 
   return (
     <View
       style={[styles.container, { backgroundColor: theme.colors.background }]}
     >
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        nestedScrollEnabled={true}
-      >
-        <JobInformations />
-        <ScrollView horizontal alwaysBounceHorizontal={false}>
-          <View style={{ width: Dimensions.get("window").width - 48 }}>
-            <JobOverview />
+      {offer ? (
+        <>
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            nestedScrollEnabled={true}
+          >
+            <JobInformations
+              jobTitle={offer.jobTitle}
+              workLocationType={offer.workLocationType}
+              employmentType={offer.employmentType}
+              location={offer.location}
+            />
+            <ScrollView horizontal alwaysBounceHorizontal={false}>
+              <View style={{ width: Dimensions.get("window").width - 48 }}>
+                <JobOverview offer={offer} />
+              </View>
+            </ScrollView>
+          </ScrollView>
+          <View style={styles.applyButtonContainer}>
+            <Button
+              buttonStyle={[
+                styles.applyButton,
+                {
+                  backgroundColor: theme.colors.primary,
+                },
+              ]}
+              title={"Postuler maintenant"}
+              onPress={onApplicationHandler}
+            />
           </View>
-        </ScrollView>
-      </ScrollView>
-      <View style={styles.applyButtonContainer}>
-        <Button
-          buttonStyle={[
-            styles.applyButton,
-            {
-              backgroundColor: theme.colors.primary,
-            },
-          ]}
-          title={"Postuler maintenant"}
-        />
-      </View>
+        </>
+      ) : (
+        <View style={{ paddingTop: 30 }}>
+          <ActivityIndicator />
+        </View>
+      )}
     </View>
   );
 };

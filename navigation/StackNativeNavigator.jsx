@@ -1,7 +1,12 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import BottomTabNavigator from "./BottomTabNavigator";
-import { JobDetailScreen, SearchResultScreen } from "../screens/stackScreens";
+import {
+  CandidateFormScreen,
+  JobDetailScreen,
+  SearchResultScreen,
+} from "../screens/stackScreens";
 import { Icon } from "@rneui/themed";
+import SuccessApplicationScreen from "../screens/stackScreens/SuccessApplicationScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -14,6 +19,10 @@ const StackNativeNavigator = ({ navigation }) => {
     >
       <Stack.Screen name="BottomTabs" component={BottomTabNavigator} />
       <Stack.Screen name="SearchResult" component={SearchResultScreen} />
+      <Stack.Screen
+        name="SuccessApplicationScreen"
+        component={SuccessApplicationScreen}
+      />
       <Stack.Screen
         name="JobDetail"
         component={JobDetailScreen}
@@ -34,6 +43,22 @@ const StackNativeNavigator = ({ navigation }) => {
               type="material-community"
               color={color}
               size={24}
+            />
+          ),
+        })}
+      />
+      <Stack.Screen
+        name="CandidateFormScreen"
+        component={CandidateFormScreen}
+        options={({ navigation }) => ({
+          headerShown: true,
+          title: "Informations de mon profile",
+          headerLeft: ({ color, size }) => (
+            <Icon
+              name="chevron-left"
+              color={color}
+              size={36}
+              onPress={() => navigation.goBack()}
             />
           ),
         })}

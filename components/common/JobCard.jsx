@@ -4,11 +4,19 @@ import { View } from "react-native";
 import { useTheme } from "../../theme/ThemeProvider";
 import TwoLineTruncateText from "./TwoLineTuncateText";
 import JobDetailTitle from "./JobDetailTitle";
+import { useEffect } from "react";
+import { useNavigation } from "@react-navigation/native";
 
-const JobCard = ({ company, title, description, details, style, onPress }) => {
+const JobCard = ({ offerId, company, title, description, details, style }) => {
   const { theme } = useTheme();
+  const navigation = useNavigation();
+
+  const detailJobHandler = () => {
+    navigation.navigate("JobDetail", { offerId });
+  };
+
   return (
-    <Pressable onPress={onPress}>
+    <Pressable onPress={detailJobHandler}>
       <View
         style={[
           styles.container,

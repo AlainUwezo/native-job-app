@@ -2,8 +2,17 @@ import { Icon, Text } from "@rneui/themed";
 import { StyleSheet } from "react-native";
 import { Image, View } from "react-native";
 import { useTheme } from "../../../theme/ThemeProvider";
+import {
+  getEmploymentTypeText,
+  getWorkLocationTypeText,
+} from "../../../utils/offer.util";
 
-const JobInformations = () => {
+const JobInformations = ({
+  jobTitle,
+  location,
+  workLocationType,
+  employmentType,
+}) => {
   const { theme } = useTheme();
 
   return (
@@ -30,7 +39,7 @@ const JobInformations = () => {
           },
         ]}
       >
-        UX Designer
+        jobTitle
       </Text>
       <Text
         style={[
@@ -40,7 +49,7 @@ const JobInformations = () => {
           },
         ]}
       >
-        Congo, Kinshasa, Limete 700
+        {location}
       </Text>
       <View style={styles.details}>
         <View
@@ -64,7 +73,7 @@ const JobInformations = () => {
               },
             ]}
           >
-            Design
+            {getEmploymentTypeText(employmentType)}
           </Text>
         </View>
         <View
@@ -88,7 +97,7 @@ const JobInformations = () => {
               },
             ]}
           >
-            Temps plein
+            {getWorkLocationTypeText(workLocationType)}
           </Text>
         </View>
       </View>

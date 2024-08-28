@@ -3,7 +3,7 @@ import { StyleSheet, View } from "react-native";
 import { useTheme } from "../../../../theme/ThemeProvider";
 import JobSectionTitle from "./JobSectionTitle";
 
-const JobSummary = () => {
+const JobSummary = ({ offer }) => {
   const { theme } = useTheme();
 
   return (
@@ -17,8 +17,7 @@ const JobSummary = () => {
           },
         ]}
       >
-        Nous cherchons un designer qui sera responsable de la création des nos
-        maquettes web
+        {offer.description}
       </Text>
     </View>
   );

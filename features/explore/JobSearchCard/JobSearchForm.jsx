@@ -10,6 +10,20 @@ import { Input, Button, Icon } from "@rneui/themed";
 import RNPickerSelect from "react-native-picker-select";
 import { useTheme } from "../../../theme/ThemeProvider";
 import { useNavigation } from "@react-navigation/native";
+import { getWorkLocationTypeText } from "../../../utils/offer.util";
+
+const rdcCities = [
+  { label: "Kinshasa", value: "Kinshasa" },
+  { label: "Lubumbashi", value: "Lubumbashi" },
+  { label: "Mbuji-Mayi", value: "Mbuji-Mayi" },
+  { label: "Kananga", value: "Kananga" },
+  { label: "Kisangani", value: "Kisangani" },
+  { label: "Bukavu", value: "Bukavu" },
+  { label: "Goma", value: "Goma" },
+  { label: "Matadi", value: "Matadi" },
+  { label: "Kolwezi", value: "Kolwezi" },
+  { label: "Likasi", value: "Likasi" },
+];
 
 const JobSearchForm = () => {
   const [job, setJob] = useState("");
@@ -17,16 +31,16 @@ const JobSearchForm = () => {
   const [location, setLocation] = useState("");
 
   const navigation = useNavigation();
+  const { theme } = useTheme();
 
   const handleSearch = () => {
-    console.log("Job:", job);
-    console.log("Category:", category);
-    console.log("Location:", location);
-
-    navigation.navigate("SearchResult");
+    // Rediriger vers l'écran de résultats avec les paramètres de recherche
+    navigation.navigate("SearchResult", {
+      job,
+      category,
+      location,
+    });
   };
-
-  const { theme } = useTheme();
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -58,11 +72,11 @@ const JobSearchForm = () => {
           <RNPickerSelect
             onValueChange={(value) => setCategory(value)}
             items={[
-              { label: "Category 1", value: "category1" },
-              { label: "Category 2", value: "category2" },
-              { label: "Category 3", value: "category3" },
+              { label: getWorkLocationTypeText(1), value: "1" },
+              { label: getWorkLocationTypeText(2), value: "2" },
+              { label: getWorkLocationTypeText(3), value: "3" },
             ]}
-            placeholder={{ label: "Select Category", value: null }}
+            placeholder={{ label: "Type de localisation", value: null }}
             style={pickerSelectStyles}
           />
         </View>
@@ -79,11 +93,7 @@ const JobSearchForm = () => {
               />
               <RNPickerSelect
                 onValueChange={(value) => setLocation(value)}
-                items={[
-                  { label: "Location 1", value: "location1" },
-                  { label: "Location 2", value: "location2" },
-                  { label: "Location 3", value: "location3" },
-                ]}
+                items={rdcCities}
                 placeholder={{ label: "Select Location", value: null }}
                 style={pickerSelectStyles}
               />
