@@ -22,7 +22,6 @@ const WorkRecommandation = () => {
       try {
         const recentJobs = await getRecentOffers();
         setJobs(recentJobs);
-        console.log(recentJobs);
       } catch (error) {
         setError("Une erreur est survenue lors de la récupération des offres.");
       } finally {

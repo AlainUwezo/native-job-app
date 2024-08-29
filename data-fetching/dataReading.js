@@ -102,3 +102,64 @@ export const getCandidateByUserId = async (userId) => {
 
   return data || [];
 };
+
+export const getCandidateById = async (candidateId) => {
+  let query = supabase
+    .from("Candidate")
+    .select(`*`)
+    .eq("id", candidateId)
+    .single();
+
+  const { data, error } = await query;
+
+  if (error) {
+    alert(error.message);
+    return null;
+  }
+
+  return data || [];
+};
+
+export const getApplicationByOfferIdAndCandidateId = async (
+  offerId,
+  candidateId
+) => {
+  let query = supabase
+    .from("Application")
+    .select(`*`)
+    .eq("offerId", offerId)
+    .eq("candidateId", candidateId)
+    .single();
+
+  const { data, error } = await query;
+
+  if (error) {
+    return null;
+  }
+
+  return data || [];
+};
+
+export const getApplicationsByCandidateId = async (candidateId) => {
+  let query = supabase
+    .from("Application")
+    .select(
+      `
+      *,
+      Offer (
+        jobTitle,
+        location
+      )
+    `
+    )
+    .eq("candidateId", candidateId);
+
+  const { data, error } = await query;
+
+  if (error) {
+    alert(error.message);
+    return [];
+  }
+
+  return data || [];
+};

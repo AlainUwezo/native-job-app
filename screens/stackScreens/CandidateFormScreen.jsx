@@ -18,8 +18,10 @@ const CandidateFormScreen = () => {
   const navigation = useNavigation();
 
   const onApplicantJob = () => {
-    console.log("candidate id", candidateId, "offer id", offerId);
-    navigation.navigate("SuccessApplicationScreen");
+    navigation.navigate("SuccessApplicationScreen", {
+      offerId: offerId,
+      candidateId: candidateId,
+    });
   };
 
   return (

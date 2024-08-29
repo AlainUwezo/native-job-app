@@ -42,3 +42,33 @@ export const createCandidate = async (
     return data;
   }
 };
+
+export const createApplication = async (
+  applicatedAt,
+  score,
+  status,
+  offerId,
+  candidateId
+) => {
+  const { data, error } = await supabase
+    .from("Application")
+    .insert([
+      {
+        applicatedAt: applicatedAt.toISOString(), // Convertir la date en format ISO
+        score: score,
+        status: status,
+        offerId: offerId,
+        candidateId: candidateId,
+      },
+    ])
+    .select();
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  if (data) {
+    return data;
+  }
+};
