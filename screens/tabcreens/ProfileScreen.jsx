@@ -28,7 +28,7 @@ const ProfileScreen = () => {
         <Text h4 style={styles.header}>
           Mon Profil
         </Text>
-        <CandidateForm />
+        <CandidateForm buttonTitle={"Modifier"} />
       </ScrollView>
     </SafeAreaView>
   );

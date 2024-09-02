@@ -7,6 +7,7 @@ import {
 } from "../screens/stackScreens";
 import { Icon } from "@rneui/themed";
 import SuccessApplicationScreen from "../screens/stackScreens/SuccessApplicationScreen";
+import AuthScreen from "../screens/stackScreens/AuthScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -17,6 +18,7 @@ const StackNativeNavigator = ({ navigation }) => {
         headerShown: false,
       }}
     >
+      <Stack.Screen name="Auth" component={AuthScreen} />
       <Stack.Screen name="BottomTabs" component={BottomTabNavigator} />
       <Stack.Screen name="SearchResult" component={SearchResultScreen} />
       <Stack.Screen

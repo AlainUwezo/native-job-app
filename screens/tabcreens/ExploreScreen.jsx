@@ -10,7 +10,7 @@ const ExploreScreen = () => {
     <View
       style={[styles.container, { backgroundColor: theme.colors.background }]}
     >
-      <StatusBar style="auto" />
+      <StatusBar style="light" />
       <ScrollView
         nestedScrollEnabled={true}
         alwaysBounceVertical={false}

@@ -4,8 +4,10 @@ import React, { createContext, useState, useContext } from "react";
 const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
-  const [candidateId, setCandidateId] = useState("2");
-  const [userId, setUserId] = useState("982de37c-2949-43b4-983b-f224dbf9c3a4");
+  const candidateTestId = "2";
+  const [candidateId, setCandidateId] = useState("");
+  const userTestId = "982de37c-2949-43b4-983b-f224dbf9c3a4";
+  const [userId, setUserId] = useState("");
 
   return (
     <AppContext.Provider
