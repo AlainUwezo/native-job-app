@@ -1,22 +1,26 @@
 import React, { useState, useEffect } from "react";
 import {
   View,
-  Alert,
   StyleSheet,
   TextInput,
   ScrollView,
   Platform,
   ActivityIndicator,
+  Text,
+  TouchableOpacity,
 } from "react-native";
-import { Button, Icon, Text } from "@rneui/themed";
+import { Button } from "@rneui/themed";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
 import RNPickerSelect from "react-native-picker-select";
+import dayjs from "dayjs";
 import { useAppContext } from "../../contexts/AppContext";
 import { getCandidateByUserId } from "../../data-fetching/dataReading";
 import { updateCandidateById } from "../../data-fetching/dataUpdating";
 import { createCandidate } from "../../data-fetching/dataCreating";
+import Loader from "../../components/common/Loader";
+import FlashMessage from "react-native-flash-message";
 
-const CandidateForm = ({ buttonTitle, onUpdateFinish }) => {
+const CandidateForm = ({ buttonTitle, onUpdateFinish, navigateScreen }) => {
   const [candidateId, setCandidateId] = useState("");
   const [resume, setResume] = useState("");
   const [gender, setGender] = useState("");
@@ -32,6 +36,25 @@ const CandidateForm = ({ buttonTitle, onUpdateFinish }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(true);
   const [isUpdated, setIsUpdated] = useState(false);
+  const [currentStep, setCurrentStep] = useState(1);
+  const steps = [
+    {
+      label: "Informations Personnelles",
+      fields: ["firstName", "lastName", "email"],
+    },
+    {
+      label: "Détails de la Carrière",
+      fields: [
+        "resume",
+        "gender",
+        "birthDate",
+        "competences",
+        "experiences",
+        "formations",
+        "spokenLanguages",
+      ],
+    },
+  ];
   const { userId } = useAppContext();
 
   useEffect(() => {
@@ -53,10 +76,18 @@ const CandidateForm = ({ buttonTitle, onUpdateFinish }) => {
           setLastName(candidate.lastName || "");
           setEmail(candidate.email || "");
         } else {
-          Alert.alert("Erreur", "Aucun candidat trouvé.");
+          showMessage({
+            message: "Erreur",
+            description: "Aucun candidat trouvé",
+            type: "danger",
+          });
         }
       } catch (error) {
-        console.error("Erreur lors de la récupération du candidat:", error);
+        showMessage({
+          message: "Erreur",
+          description: "Erreur lors de la récupération du candidat",
+          type: "danger",
+        });
       } finally {
         setIsFetching(false);
       }
@@ -73,7 +104,11 @@ const CandidateForm = ({ buttonTitle, onUpdateFinish }) => {
 
   const handleSubmit = async () => {
     if (!firstName || !lastName || !email || !gender || !birthDate) {
-      Alert.alert("Erreur", "Veuillez remplir tous les champs requis.");
+      showMessage({
+        message: "Erreur",
+        description: "Veuillez remplir tous les champs requis",
+        type: "danger",
+      });
       return;
     }
 
@@ -85,7 +120,11 @@ const CandidateForm = ({ buttonTitle, onUpdateFinish }) => {
         throw new Error("Invalid date format");
       }
     } catch (error) {
-      Alert.alert("Erreur", "Format de date invalide.");
+      showMessage({
+        message: "Erreur",
+        description: "Format de la date invalide",
+        type: "danger",
+      });
       return;
     }
 
@@ -103,7 +142,6 @@ const CandidateForm = ({ buttonTitle, onUpdateFinish }) => {
 
     try {
       setIsLoading(true);
-      console.log("Bonjour Alain" + candidateId);
 
       let result;
       if (candidateId) {
@@ -137,26 +175,23 @@ const CandidateForm = ({ buttonTitle, onUpdateFinish }) => {
         );
       }
 
-      if (result) {
-        setIsUpdated((prev) => !prev);
-        onUpdateFinish && onUpdateFinish();
-      }
+      setIsUpdated((prev) => !prev);
+      onUpdateFinish && onUpdateFinish();
     } catch (error) {
-      console.error("Erreur lors de la mise à jour du candidat:", error);
+      showMessage({
+        message: "Erreur",
+        description: "Erreur lors de la mise à jour du candidat",
+        type: "danger",
+      });
     } finally {
       setIsLoading(false);
     }
   };
 
+  const currentFields = steps[currentStep - 1].fields;
+
   if (isFetching) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#007AFF" />
-        <Text style={styles.loadingText}>
-          Chargement des données du profil...
-        </Text>
-      </View>
-    );
+    return <Loader />;
   }
 
   return (
@@ -166,130 +201,183 @@ const CandidateForm = ({ buttonTitle, onUpdateFinish }) => {
         alwaysBounceVertical={false}
         showsVerticalScrollIndicator={false}
       >
-        <Text style={styles.title}>Formulaire du Candidat</Text>
+        <Text style={styles.title}>{steps[currentStep - 1].label}</Text>
 
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="Prénom"
-            value={firstName}
-            onChangeText={setFirstName}
-          />
-        </View>
+        {currentFields.includes("firstName") && (
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Prénom</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Entrez votre prénom"
+              value={firstName}
+              onChangeText={setFirstName}
+            />
+          </View>
+        )}
 
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="Nom"
-            value={lastName}
-            onChangeText={setLastName}
-          />
-        </View>
+        {currentFields.includes("lastName") && (
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Nom</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Entrez votre nom"
+              value={lastName}
+              onChangeText={setLastName}
+            />
+          </View>
+        )}
 
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="Email"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-          />
-        </View>
+        {currentFields.includes("email") && (
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Email</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Entrez votre email"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+            />
+          </View>
+        )}
 
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.textArea}
-            placeholder="Résumé"
-            value={resume}
-            onChangeText={setResume}
-            multiline
-            numberOfLines={4}
-          />
-        </View>
+        {currentFields.includes("resume") && (
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Résumé</Text>
+            <TextInput
+              style={styles.textArea}
+              placeholder="Entrez votre résumé"
+              value={resume}
+              onChangeText={setResume}
+              multiline
+              numberOfLines={4}
+            />
+          </View>
+        )}
 
-        <View style={styles.inputContainer}>
-          <RNPickerSelect
-            placeholder={{ label: "Genre", value: "" }}
-            items={[
-              { label: "Homme", value: "male" },
-              { label: "Femme", value: "female" },
-              { label: "Autre", value: "other" },
-            ]}
-            onValueChange={(value) => setGender(value)}
-            value={gender}
-            style={pickerSelectStyles}
-          />
-        </View>
+        {currentFields.includes("gender") && (
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Genre</Text>
+            <RNPickerSelect
+              placeholder={{ label: "Sélectionnez votre genre", value: "" }}
+              items={[
+                { label: "Homme", value: "male" },
+                { label: "Femme", value: "female" },
+                { label: "Autre", value: "other" },
+              ]}
+              onValueChange={(value) => setGender(value)}
+              value={gender}
+              style={pickerSelectStyles}
+            />
+          </View>
+        )}
 
-        <View style={styles.inputContainer}>
-          <Button
-            title={birthDate.toDateString()}
-            onPress={() => setShowDatePicker(true)}
-            buttonStyle={styles.dateButton}
-            titleStyle={styles.dateButtonTitle}
-          />
-          {showDatePicker && (
-            <RNDateTimePicker
-              value={birthDate}
-              mode="date"
-              display="spinner"
-              onChange={handleDateChange}
+        {currentFields.includes("birthDate") && (
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Date de Naissance</Text>
+            <Button
+              title={dayjs(birthDate).format("DD/MM/YYYY")}
+              onPress={() => setShowDatePicker(true)}
+              buttonStyle={styles.dateButton}
+              titleStyle={styles.dateButtonTitle}
+            />
+            {showDatePicker && (
+              <RNDateTimePicker
+                value={birthDate}
+                mode="date"
+                display="spinner"
+                onChange={handleDateChange}
+              />
+            )}
+          </View>
+        )}
+
+        {currentFields.includes("competences") && (
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Compétences</Text>
+            <TextInput
+              style={styles.textArea}
+              placeholder="Entrez vos compétences"
+              value={competences}
+              onChangeText={setCompetences}
+              multiline
+              numberOfLines={4}
+            />
+          </View>
+        )}
+
+        {currentFields.includes("experiences") && (
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Expériences</Text>
+            <TextInput
+              style={styles.textArea}
+              placeholder="Entrez vos expériences"
+              value={experiences}
+              onChangeText={setExperiences}
+              multiline
+              numberOfLines={4}
+            />
+          </View>
+        )}
+
+        {currentFields.includes("formations") && (
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Formations</Text>
+            <TextInput
+              style={styles.textArea}
+              placeholder="Entrez vos formations"
+              value={formations}
+              onChangeText={setFormations}
+              multiline
+              numberOfLines={4}
+            />
+          </View>
+        )}
+
+        {currentFields.includes("spokenLanguages") && (
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Langues Parlées</Text>
+            <TextInput
+              style={styles.textArea}
+              placeholder="Entrez les langues que vous parlez"
+              value={spokenLanguages}
+              onChangeText={setSpokenLanguages}
+              multiline
+              numberOfLines={4}
+            />
+          </View>
+        )}
+
+        <View style={styles.buttonContainer}>
+          {currentStep > 1 && (
+            <Button
+              title="Précédent"
+              onPress={() => setCurrentStep((prev) => prev - 1)}
+              buttonStyle={styles.navButton}
+              titleStyle={styles.navButtonTitle}
+            />
+          )}
+
+          {currentStep < steps.length ? (
+            <Button
+              title="Continuer"
+              onPress={() => setCurrentStep((prev) => prev + 1)}
+              buttonStyle={styles.navButton}
+              titleStyle={styles.navButtonTitle}
+            />
+          ) : (
+            <Button
+              title={buttonTitle || "Soumettre"}
+              onPress={handleSubmit}
+              loading={isLoading}
+              containerStyle={{ flexGrow: "1" }}
+              buttonStyle={styles.submitButton}
+              titleStyle={styles.submitButtonTitle}
             />
           )}
         </View>
-
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.textArea}
-            placeholder="Expériences"
-            value={experiences}
-            onChangeText={setExperiences}
-            multiline
-            numberOfLines={4}
-          />
-        </View>
-
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.textArea}
-            placeholder="Compétences"
-            value={competences}
-            onChangeText={setCompetences}
-            multiline
-            numberOfLines={4}
-          />
-        </View>
-
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.textArea}
-            placeholder="Formations"
-            value={formations}
-            onChangeText={setFormations}
-            multiline
-            numberOfLines={4}
-          />
-        </View>
-
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.textArea}
-            placeholder="Langues parlées"
-            value={spokenLanguages}
-            onChangeText={setSpokenLanguages}
-            multiline
-            numberOfLines={4}
-          />
-        </View>
-
-        <Button
-          title={buttonTitle}
-          onPress={handleSubmit}
-          loading={isLoading}
-          buttonStyle={styles.submitButton}
-          titleStyle={styles.submitButtonTitle}
-        />
+        <FlashMessage position="top" />
       </ScrollView>
+      {/* {isLoading && <Loader />} */}
     </View>
   );
 };
@@ -297,107 +385,107 @@ const CandidateForm = ({ buttonTitle, onUpdateFinish }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
     padding: 20,
-    borderRadius: 12,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    elevation: 5,
-    margin: 10,
-  },
-  scrollViewContent: {
-    paddingBottom: 20,
+    backgroundColor: "#F9F9F9",
   },
   title: {
-    fontSize: 28,
-    fontWeight: "600",
-    color: "#007AFF",
+    fontSize: 20,
+    fontWeight: "bold",
     marginBottom: 20,
+    color: "#333333",
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: "600",
+    marginBottom: 5,
+    color: "#333333",
   },
   inputContainer: {
     marginBottom: 15,
   },
   input: {
     height: 40,
-    fontSize: 16,
-    color: "#333333",
-    borderBottomWidth: 1,
-    borderBottomColor: "#007AFF",
-    paddingVertical: 5,
+    borderColor: "#C8C8C8",
+    borderWidth: 1,
+    borderRadius: 5,
     paddingHorizontal: 10,
-    borderRadius: 8,
   },
   textArea: {
-    minHeight: 80,
-    fontSize: 16,
-    color: "#333333",
-    borderColor: "#007AFF",
+    height: 100,
+    borderColor: "#C8C8C8",
     borderWidth: 1,
-    borderRadius: 8,
-    padding: 10,
+    borderRadius: 5,
+    paddingHorizontal: 10,
     textAlignVertical: "top",
   },
   dateButton: {
-    backgroundColor: "#E5E5E5",
-    borderRadius: 8,
-    borderColor: "#007AFF",
-    borderWidth: 1,
-    padding: 10,
+    backgroundColor: "#007AFF",
+    paddingVertical: 10,
+    borderRadius: 5,
+    marginVertical: 5,
   },
   dateButtonTitle: {
-    color: "#333333",
-    fontSize: 16,
+    color: "#FFFFFF",
   },
   submitButton: {
     backgroundColor: "#007AFF",
-    borderRadius: 8,
-    marginTop: 20,
+    borderRadius: 5,
+    paddingVertical: 15,
+    borderRadius: 5,
+    flex: 1,
   },
   submitButtonTitle: {
-    fontSize: 18,
-    fontWeight: "500",
+    color: "#FFFFFF",
+  },
+  navButton: {
+    backgroundColor: "#C8C8C8",
+    paddingVertical: 10,
+    borderRadius: 5,
+    marginHorizontal: 5,
+  },
+  navButtonTitle: {
+    color: "#000000",
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    display: "flex",
+    marginTop: 20,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#FFFFFF",
   },
   loadingText: {
     marginTop: 10,
     fontSize: 16,
-    color: "#007AFF",
+    color: "#333333",
   },
 });
 
 const pickerSelectStyles = StyleSheet.create({
   inputIOS: {
     fontSize: 16,
-    color: "#333333",
     paddingVertical: 12,
     paddingHorizontal: 10,
-    borderRadius: 8,
     borderWidth: 1,
-    borderColor: "#007AFF",
-    backgroundColor: "#FFFFFF",
-    height: 40,
-    width: "100%",
+    borderColor: "#C8C8C8",
+    borderRadius: 5,
+    color: "#000",
+    paddingRight: 30,
   },
   inputAndroid: {
     fontSize: 16,
-    color: "#333333",
-    paddingVertical: 8,
     paddingHorizontal: 10,
-    borderRadius: 8,
+    paddingVertical: 8,
     borderWidth: 1,
-    borderColor: "#007AFF",
-    backgroundColor: "#FFFFFF",
-    height: 40,
-    width: "100%",
-  },
-  placeholder: {
-    color: "#B4B4B4",
+    borderColor: "#C8C8C8",
+    borderRadius: 5,
+    color: "#000",
+    paddingRight: 30,
   },
 });
 

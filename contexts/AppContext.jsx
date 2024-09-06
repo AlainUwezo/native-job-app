@@ -6,12 +6,20 @@ const AppContext = createContext();
 export const AppProvider = ({ children }) => {
   const candidateTestId = "2";
   const [candidateId, setCandidateId] = useState("");
+  const [isCandidate, setIsCandidate] = useState(false);
   const userTestId = "982de37c-2949-43b4-983b-f224dbf9c3a4";
   const [userId, setUserId] = useState("");
 
   return (
     <AppContext.Provider
-      value={{ candidateId, setCandidateId, userId, setUserId }}
+      value={{
+        candidateId,
+        setCandidateId,
+        userId,
+        setUserId,
+        setIsCandidate,
+        isCandidate,
+      }}
     >
       {children}
     </AppContext.Provider>

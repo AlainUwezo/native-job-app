@@ -22,7 +22,7 @@ const BottomTabNavigator = () => {
       }}
     >
       <Bottom.Screen
-        name="Explore"
+        name="Explorer"
         component={ExploreScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
@@ -31,7 +31,7 @@ const BottomTabNavigator = () => {
         }}
       />
       <Bottom.Screen
-        name="Jobs"
+        name="Candidatures"
         component={JobsScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
@@ -40,7 +40,7 @@ const BottomTabNavigator = () => {
         }}
       />
       <Bottom.Screen
-        name="Profile"
+        name="Mon Profil"
         component={ProfileScreen}
         options={{
           tabBarIcon: ({ color, size }) => (

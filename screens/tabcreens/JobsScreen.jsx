@@ -3,25 +3,29 @@ import ApplicationList from "../../features/applications/ApplicationList";
 import { useAppContext } from "../../contexts/AppContext";
 import { Text } from "@rneui/themed";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useFocusEffect } from "@react-navigation/native";
+import useStatusBar from "../../hooks/useStatusBar";
 
 const JobsScreen = () => {
   const { candidateId } = useAppContext();
 
+  useStatusBar("dark-content");
+
   return (
-    <SafeAreaView>
-      <Text h4 style={styles.header}>
-        Mes Candidatures
-      </Text>
+    <View style={styles.container}>
       <ApplicationList candidateId={candidateId} />
-    </SafeAreaView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#f8f9fa",
+  },
   header: {
     textAlign: "center",
     fontWeight: "bold",
-    paddingVertical: 12,
   },
 });
 

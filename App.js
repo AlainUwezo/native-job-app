@@ -3,6 +3,7 @@ import AppNavigator from "./navigation/AppNavigator";
 import { ThemeProvider, useTheme } from "./theme/ThemeProvider";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { AppProvider } from "./contexts/AppContext";
+import { SearchProvider } from "./contexts/SearchContext";
 
 export default function App() {
   return (
@@ -20,8 +21,10 @@ const AppContent = () => {
   return (
     <>
       <AppProvider>
-        <StatusBar style={isDarkTheme ? "light" : "dark"} />
-        <AppNavigator />
+        <SearchProvider>
+          <StatusBar style={isDarkTheme ? "light" : "dark"} />
+          <AppNavigator />
+        </SearchProvider>
       </AppProvider>
     </>
   );

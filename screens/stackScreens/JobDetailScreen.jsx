@@ -7,6 +7,7 @@ import { useTheme } from "../../theme/ThemeProvider";
 import { useEffect, useState } from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { getOfferById } from "../../data-fetching/dataReading";
+import useStatusBar from "../../hooks/useStatusBar";
 
 const {
   View,
@@ -24,6 +25,8 @@ const JobDetailScreen = () => {
   const [offer, setOffer] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
+
+  useStatusBar("dark-content");
 
   useEffect(() => {
     let isCanceled = false;
@@ -56,41 +59,45 @@ const JobDetailScreen = () => {
     <View
       style={[styles.container, { backgroundColor: theme.colors.background }]}
     >
-      {offer ? (
-        <>
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            nestedScrollEnabled={true}
-          >
-            <JobInformations
-              jobTitle={offer.jobTitle}
-              workLocationType={offer.workLocationType}
-              employmentType={offer.employmentType}
-              location={offer.location}
-            />
-            <ScrollView horizontal alwaysBounceHorizontal={false}>
-              <View style={{ width: Dimensions.get("window").width - 48 }}>
-                <JobOverview offer={offer} />
+      {loading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={theme.colors.primary} />
+        </View>
+      ) : (
+        offer && (
+          <>
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={styles.scrollViewContent}
+              nestedScrollEnabled
+            >
+              <JobInformations
+                jobTitle={offer.jobTitle}
+                workLocationType={offer.workLocationType}
+                employmentType={offer.employmentType}
+                location={offer.location}
+              />
+              <View style={styles.jobOverviewContainer}>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                  <View style={styles.jobOverviewContent}>
+                    <JobOverview offer={offer} />
+                  </View>
+                </ScrollView>
               </View>
             </ScrollView>
-          </ScrollView>
-          <View style={styles.applyButtonContainer}>
-            <Button
-              buttonStyle={[
-                styles.applyButton,
-                {
-                  backgroundColor: theme.colors.primary,
-                },
-              ]}
-              title={"Postuler maintenant"}
-              onPress={onApplicationHandler}
-            />
-          </View>
-        </>
-      ) : (
-        <View style={{ paddingTop: 30 }}>
-          <ActivityIndicator />
-        </View>
+            <View style={styles.applyButtonContainer}>
+              <Button
+                buttonStyle={[
+                  styles.applyButton,
+                  { backgroundColor: theme.colors.primary },
+                ]}
+                title={"Postuler maintenant"}
+                onPress={onApplicationHandler}
+                containerStyle={styles.applyButton}
+              />
+            </View>
+          </>
+        )
       )}
     </View>
   );
@@ -101,15 +108,27 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 24,
   },
-  innerContainer: {
-    maxHeight: "80%",
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  scrollViewContent: {
+    paddingBottom: 80,
+  },
+  jobOverviewContainer: {
+    marginTop: 24,
+  },
+  jobOverviewContent: {
+    width: Dimensions.get("window").width - 48,
   },
   applyButtonContainer: {
-    paddingBottom: 48,
-    paddingTop: 12,
+    paddingBottom: 24,
+    paddingHorizontal: 16,
   },
   applyButton: {
     borderRadius: 100,
+    paddingVertical: 16,
   },
 });
 

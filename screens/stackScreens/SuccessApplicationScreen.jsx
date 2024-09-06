@@ -11,6 +11,8 @@ import {
 } from "../../data-fetching/dataReading";
 import { createApplication } from "../../data-fetching/dataCreating";
 import { ApplicationStatus } from "../../models/ApplicationStatus";
+import { useAppContext } from "../../contexts/AppContext";
+import useStatusBar from "../../hooks/useStatusBar";
 
 const SuccessApplicationScreen = ({ navigation }) => {
   const route = useRoute();
@@ -19,6 +21,7 @@ const SuccessApplicationScreen = ({ navigation }) => {
   const [candidate, setCandidate] = useState(null);
   const [loading, setLoading] = useState(true);
   const [calculating, setCalculating] = useState(false);
+  const { setIsCandidate } = useAppContext();
 
   // Fonction pour formater les informations de l'offre
   const formatOfferText = (offer) => {
@@ -29,6 +32,8 @@ const SuccessApplicationScreen = ({ navigation }) => {
   const formatCandidateText = (candidate) => {
     return `Name: ${candidate.firstName} ${candidate.lastName}. Skills: ${candidate.competences}. Experience: ${candidate.experiences}. Education: ${candidate.formations}. Languages: ${candidate.spokenLanguages}`;
   };
+
+  useStatusBar("dark-content");
 
   useEffect(() => {
     let isCanceled = false;
@@ -102,6 +107,11 @@ const SuccessApplicationScreen = ({ navigation }) => {
     };
   }, [offerId]);
 
+  const handleNavigateHome = () => {
+    setIsCandidate((prev) => !prev);
+    navigation.navigate("BottomTabs", { screen: "explore" });
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       {loading || calculating ? ( // Affichez le loader pendant le chargement ou le calcul
@@ -132,7 +142,7 @@ const SuccessApplicationScreen = ({ navigation }) => {
           </View>
           <Button
             title="Explorer d'autres opportunités"
-            onPress={() => navigation.navigate("Explore")}
+            onPress={() => handleNavigateHome()}
             containerStyle={styles.buttonContainer}
             buttonStyle={styles.button}
           />

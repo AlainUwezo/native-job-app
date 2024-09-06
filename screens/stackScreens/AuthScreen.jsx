@@ -41,18 +41,21 @@ const AuthScreen = () => {
 
       // Récupérer le candidateId en fonction du userId
       const candidates = await getCandidateByUserId(userId);
-      if (candidates && candidates.length > 0) {
-        setCandidateId(candidates[0].id); // Mettre à jour le candidateId s'il est trouvé
-      } else {
-        setCandidateId(""); // Laisser vide si aucun candidateId n'est trouvé
-      }
 
       showMessage({
         message: "Succès",
         description: "Connecté avec succès!",
         type: "success",
       });
-      navigation.navigate("BottomTabs", { screen: "Explore" });
+      if (candidates && candidates.length > 0) {
+        setCandidateId(candidates[0].id); // Mettre à jour le candidateId s'il est trouvé
+
+        navigation.navigate("BottomTabs", { screen: "AddCandidate" });
+      } else {
+        setCandidateId(""); // Laisser vide si aucun candidateId n'est trouvé
+        navigation.navigate("AddCandidate");
+      }
+      // navigation.navigate("BottomTabs", { screen: "Explore" });
     }
     setLoading(false);
   };

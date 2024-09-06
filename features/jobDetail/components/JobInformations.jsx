@@ -1,6 +1,5 @@
 import { Icon, Text } from "@rneui/themed";
-import { StyleSheet } from "react-native";
-import { Image, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { useTheme } from "../../../theme/ThemeProvider";
 import {
   getEmploymentTypeText,
@@ -25,9 +24,11 @@ const JobInformations = ({
           },
         ]}
       >
-        <Image
-          style={[styles.logo]}
-          source={require("./../../../assets/images/twitter.png")}
+        <Icon
+          name="briefcase"
+          type="font-awesome"
+          size={60}
+          color={theme.colors.primary500}
         />
       </View>
       <Text
@@ -39,7 +40,7 @@ const JobInformations = ({
           },
         ]}
       >
-        jobTitle
+        {jobTitle}
       </Text>
       <Text
         style={[
@@ -63,11 +64,12 @@ const JobInformations = ({
           <Icon
             name="briefcase-outline"
             type="material-community"
-            size={24}
+            size={20}
             color={theme.colors.text500}
           />
           <Text
             style={[
+              styles.detailText,
               {
                 color: theme.colors.text700,
               },
@@ -87,11 +89,12 @@ const JobInformations = ({
           <Icon
             name="timer"
             type="ionicon"
-            size={24}
+            size={20}
             color={theme.colors.text500}
           />
           <Text
             style={[
+              styles.detailText,
               {
                 color: theme.colors.text700,
               },
@@ -108,37 +111,58 @@ const JobInformations = ({
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
-    paddingTop: 48,
+    paddingVertical: 32,
+    paddingHorizontal: 16,
+    backgroundColor: "#FFFFFF", // Ensure the background is clean and bright
+    borderRadius: 12,
+    shadowColor: "#000000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 4,
   },
   logoContainer: {
-    padding: 10,
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-  },
-  logo: {
-    width: "100%",
-    height: "100%",
+    padding: 12,
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: "#E0E0E0", // Subtle background color for the logo container
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 16,
   },
   jobTitle: {
-    marginTop: 24,
+    fontSize: 22,
+    fontWeight: "600",
     marginBottom: 8,
-    fontWeight: 500,
+    textAlign: "center",
+  },
+  address: {
+    fontSize: 16,
+    fontWeight: "400",
+    marginBottom: 16,
+    textAlign: "center",
   },
   details: {
-    marginVertical: 24,
     flexDirection: "row",
-    gap: 24,
-    alignItems: "center",
+    justifyContent: "space-between",
+    width: "100%",
+    maxWidth: 400, // Ensure details don't stretch too wide
   },
   detail: {
     flexDirection: "row",
-    gap: 12,
     alignItems: "center",
     borderWidth: 1,
-    paddingVertical: 4,
-    paddingHorizontal: 12,
-    borderRadius: 100,
+    borderRadius: 20,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderColor: "#DDDDDD",
+    backgroundColor: "#F9F9F9", // Light background for detail items
+  },
+  detailText: {
+    fontSize: 14,
+    fontWeight: "400",
+    marginLeft: 8,
   },
 });
 

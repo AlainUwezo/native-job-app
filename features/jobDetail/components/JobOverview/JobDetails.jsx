@@ -24,33 +24,28 @@ const JobDetails = ({ offer }) => {
   const salary = {
     title: "Avantages et salaires",
     icon: "attach-money",
-    value: [`Salaire annuel ${salary}$`],
+    value: [`Salaire annuel ${offer.salary}$`], // Ensure salary is provided in the offer
   };
 
   const data = [requirements, responsibilities, salary];
 
   return (
-    <View>
+    <View style={styles.container}>
       {data.map((item, id) => (
         <View key={id}>
           {item.title && <JobSectionTitle title={item.title} />}
-          <View style={styles.responsabilities}>
-            <FlatList
-              alwaysBounceVertical={false}
-              data={item.value}
-              renderItem={({ item, index }) => {
-                return (
-                  <JobSection
-                    label={
-                      data[id].label == 1 ? `${index + 1}.` : data[id].label
-                    }
-                    icon={data[id].icon}
-                    value={item}
-                  />
-                );
-              }}
-            />
-          </View>
+          <FlatList
+            data={item.value}
+            renderItem={({ item, index }) => (
+              <JobSection
+                label={data[id].label === 1 ? `${index + 1}.` : data[id].label}
+                icon={data[id].icon}
+                value={item}
+              />
+            )}
+            keyExtractor={(item, index) => index.toString()}
+            contentContainerStyle={styles.listContainer}
+          />
         </View>
       ))}
     </View>
@@ -58,9 +53,19 @@ const JobDetails = ({ offer }) => {
 };
 
 const styles = StyleSheet.create({
-  responsabilities: {
-    paddingVertical: 16,
-    gap: 12,
+  container: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  listContainer: {
+    paddingVertical: 12,
   },
 });
 

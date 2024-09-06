@@ -12,6 +12,7 @@ export const getRecentOffers = async () => {
       )
     `
     )
+    .eq("status", 1)
     .order("createdAt", { ascending: false })
     .limit(10);
 
@@ -37,6 +38,7 @@ export const getFilteredOffers = async (jobName, category, location) => {
       )
     `
     )
+    .eq("status", 1)
     .order("createdAt", { ascending: false });
 
   if (jobName) {

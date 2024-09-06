@@ -7,7 +7,7 @@ const JobSummary = ({ offer }) => {
   const { theme } = useTheme();
 
   return (
-    <View>
+    <View style={styles.container}>
       <JobSectionTitle title={"Résumé"} />
       <Text
         style={[
@@ -24,8 +24,13 @@ const JobSummary = ({ offer }) => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
   summary: {
-    paddingTop: 16,
+    paddingTop: 8,
+    lineHeight: 22,
   },
 });
 

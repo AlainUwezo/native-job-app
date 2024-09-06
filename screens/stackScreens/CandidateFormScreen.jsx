@@ -2,6 +2,7 @@ import { Text } from "@rneui/themed";
 import { useAppContext } from "../../contexts/AppContext";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import CandidateForm from "../../features/candidate/CandidateForm";
+import useStatusBar from "../../hooks/useStatusBar";
 
 const {
   View,
@@ -16,6 +17,8 @@ const CandidateFormScreen = () => {
   const route = useRoute();
   const { offerId } = route.params;
   const navigation = useNavigation();
+
+  useStatusBar("dark-content");
 
   const onApplicantJob = () => {
     navigation.navigate("SuccessApplicationScreen", {

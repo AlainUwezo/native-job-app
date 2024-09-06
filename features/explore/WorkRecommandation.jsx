@@ -1,36 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { ActivityIndicator, FlatList, StyleSheet, View } from "react-native";
-import { Text } from "@rneui/themed";
+import { Text, Icon } from "@rneui/themed"; // Importation de l'icône
 import { useTheme } from "../../theme/ThemeProvider";
 import { JobCard } from "../../components/common";
-import { getRecentOffers } from "../../data-fetching/dataReading";
 import {
   getEmploymentTypeText,
   getWorkLocationTypeText,
 } from "../../utils/offer.util";
 
-const WorkRecommandation = () => {
+const WorkRecommandation = ({ jobs, loading, error }) => {
+  // Réception des props
+
   const { theme } = useTheme();
-  const [jobs, setJobs] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const fetchRecentJobs = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const recentJobs = await getRecentOffers();
-        setJobs(recentJobs);
-      } catch (error) {
-        setError("Une erreur est survenue lors de la récupération des offres.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchRecentJobs();
-  }, []);
 
   return (
     <View style={styles.container}>
@@ -97,6 +78,8 @@ const styles = StyleSheet.create({
   title: {
     fontWeight: "bold",
     marginBottom: 8,
+    display: "flex",
+    alignItems: "center",
   },
   description: {
     fontSize: 16,

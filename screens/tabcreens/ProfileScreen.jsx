@@ -7,6 +7,7 @@ import {
   ScrollView,
   Platform,
   ActivityIndicator,
+  TouchableOpacity,
 } from "react-native";
 import { Button, Icon, Text } from "@rneui/themed";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -16,34 +17,96 @@ import { getCandidateByUserId } from "../../data-fetching/dataReading";
 import { updateCandidateById } from "../../data-fetching/dataUpdating";
 import { useAppContext } from "../../contexts/AppContext";
 import CandidateForm from "../../features/candidate/CandidateForm";
+import ProfileView from "../../features/candidate/ProfileView";
+import useStatusBar from "../../hooks/useStatusBar";
 
 const ProfileScreen = () => {
+  const [isShowProfile, setIsShowProfile] = useState(true);
+
+  const handleShowUpdateProfile = () => {
+    setIsShowProfile(false);
+  };
+
+  const handleUpdateProfile = () => {
+    setIsShowProfile(true);
+  };
+  const handleBackPress = () => {
+    setIsShowProfile(true);
+  };
+
+  useStatusBar("light-content");
+
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <ScrollView
         nestedScrollEnabled={true}
         alwaysBounceVertical={false}
         showsVerticalScrollIndicator={false}
       >
-        <Text h4 style={styles.header}>
-          Mon Profil
-        </Text>
-        <CandidateForm buttonTitle={"Modifier"} />
+        {isShowProfile ? (
+          <ProfileView OnUpdateProfile={handleShowUpdateProfile} />
+        ) : (
+          <SafeAreaView>
+            <View style={[styles.header]}>
+              <TouchableOpacity
+                onPress={handleBackPress}
+                style={styles.backButton}
+              >
+                <Icon name="arrow-back" type="ionicon" color="#007AFF" />
+              </TouchableOpacity>
+              <Text style={styles.headerTitle}>Modifier Votre Profil</Text>
+            </View>
+            <CandidateForm
+              buttonTitle={"Modifier"}
+              onUpdateFinish={handleUpdateProfile}
+            />
+          </SafeAreaView>
+        )}
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
     flex: 1,
     backgroundColor: "#f5f5f5",
   },
   header: {
-    textAlign: "center",
+    borderBottomColor: "white",
+    borderBottomWidth: 1,
+    height: Platform.OS === "ios" ? 80 : 60, // Hauteur pour iOS et Android
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
+    paddingHorizontal: 15,
+    elevation: 4, // Ombrage pour Android
+    shadowColor: "#000", // Ombre pour iOS
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+  },
+  backButton: {
+    position: "absolute",
+    color: "red",
+    left: 15,
+    top: Platform.OS === "ios" ? 30 : 15, // Position en haut du header
+  },
+  headerTitle: {
+    fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 20,
+    color: "#007AFF",
+    textAlign: "center",
+    flex: 1,
+    marginHorizontal: 40,
+  },
+  title: {
+    fontSize: 24, // Taille du texte
+    fontWeight: "bold", // Gras
+    color: "#007AFF", // Couleur principale (bleu iOS)
+    textAlign: "center", // Centré
+    marginVertical: 20, // Espace vertical
+    paddingHorizontal: 15, // Espacement horizontal
   },
   inputContainer: {
     flexDirection: "row",

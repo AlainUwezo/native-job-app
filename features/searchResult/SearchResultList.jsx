@@ -1,13 +1,9 @@
-import { Text } from "@rneui/themed";
-import { FlatList, StyleSheet, View } from "react-native";
-import { useTheme } from "../../theme/ThemeProvider";
+import { Text, useTheme, Button } from "@rneui/themed";
+import { FlatList, StyleSheet, View, ActivityIndicator } from "react-native";
 import { JobCard } from "../../components/common";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { useEffect, useState } from "react";
-import {
-  getFilteredOffers,
-  getRecentOffers,
-} from "../../data-fetching/dataReading";
+import { getFilteredOffers } from "../../data-fetching/dataReading";
 import {
   getEmploymentTypeText,
   getWorkLocationTypeText,
@@ -41,14 +37,15 @@ const SearchResultList = () => {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <Text>Loading...</Text>
+        <ActivityIndicator size="large" color={theme.colors.primary} />
+        <Text style={styles.loadingText}>Chargement des offres...</Text>
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
-      <Text h4 h4Style style={styles.title}>
+      <Text h4 h4Style style={[styles.title, { color: theme.colors.primary }]}>
         Résultat de la recherche
       </Text>
       <Text
@@ -89,27 +86,43 @@ const SearchResultList = () => {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     paddingHorizontal: 24,
-    paddingTop: 12,
-    marginBottom: 100,
+    paddingTop: 24,
+    backgroundColor: "#fff", // Utiliser une couleur de fond blanche ou celle du thème
   },
   title: {
     fontWeight: "bold",
-    marginBottom: 4,
+    marginBottom: 8,
+    fontSize: 24, // Taille de police plus grande pour le titre
   },
   description: {
     fontSize: 16,
+    marginBottom: 16,
   },
   jobs: {
-    paddingVertical: 24,
+    paddingTop: 12,
   },
   job: {
-    marginBottom: 24,
+    marginBottom: 16, // Espacement entre chaque carte de job
+    borderRadius: 12, // Ajouter un radius pour arrondir les bords des cartes
+    backgroundColor: "#f9f9f9", // Couleur de fond douce pour chaque carte
+    shadowColor: "#000", // Ombre pour Android
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 3, // Ombre pour iOS
   },
   loadingContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#fff",
+  },
+  loadingText: {
+    marginTop: 12,
+    fontSize: 16,
+    color: "#666",
   },
 });
 

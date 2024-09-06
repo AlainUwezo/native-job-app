@@ -1,9 +1,9 @@
 export const getEmploymentTypeText = (employmentType: number): string => {
   switch (employmentType) {
     case 1:
-      return "Full-time";
+      return "Temps plein";
     case 2:
-      return "Part-time";
+      return "Temps partiel";
     default:
       return "Unknown";
   }
