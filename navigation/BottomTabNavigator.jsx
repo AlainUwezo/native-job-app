@@ -4,6 +4,7 @@ import {
   JobsScreen,
   MessagesScreen,
   ProfileScreen,
+  GigWorksScreen,
 } from "../screens/tabcreens";
 import { Icon } from "@rneui/themed";
 import { useTheme } from "../theme/ThemeProvider";
@@ -36,6 +37,15 @@ const BottomTabNavigator = () => {
         options={{
           tabBarIcon: ({ color, size }) => (
             <Icon name="work" color={color} size={size} />
+          ),
+        }}
+      />
+      <Bottom.Screen
+        name="Gig Works"
+        component={GigWorksScreen}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Icon name="business-center" color={color} size={size} />
           ),
         }}
       />

@@ -114,7 +114,7 @@ const SuccessApplicationScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {loading || calculating ? ( // Affichez le loader pendant le chargement ou le calcul
+      {loading || calculating ? (
         <View style={styles.loaderContainer}>
           <ActivityIndicator size="large" color="#2196f3" />
           <Text style={styles.loadingText}>

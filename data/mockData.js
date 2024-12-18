@@ -79,3 +79,30 @@ export const JOBS = [
     details: ["Temps plein", "$100-200K/mois", "CDD", "Remote"],
   },
 ];
+
+// src/data/gigs.js
+export const gigs = [
+  {
+    id: "1",
+    title: "Développeur React Native",
+    description:
+      "Développement d'une application mobile en React Native pour une startup.",
+    price: "$1000",
+    location: "À distance",
+  },
+  {
+    id: "2",
+    title: "Designer UI/UX",
+    description:
+      "Conception d'une interface utilisateur intuitive pour un site web de e-commerce.",
+    price: "$800",
+    location: "Lubumbashi, RDC",
+  },
+  {
+    id: "3",
+    title: "Rédacteur de contenu",
+    description: "Création de contenu SEO pour un blog technologique.",
+    price: "$500",
+    location: "À distance",
+  },
+];

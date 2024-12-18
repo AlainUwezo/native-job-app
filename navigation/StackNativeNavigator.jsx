@@ -9,6 +9,7 @@ import { Icon } from "@rneui/themed";
 import SuccessApplicationScreen from "../screens/stackScreens/SuccessApplicationScreen";
 import AuthScreen from "../screens/stackScreens/AuthScreen";
 import AddCandidateScreen from "../screens/stackScreens/AddCandidateScreen";
+import GigDetailScreen from "../screens/stackScreens/GigDetailScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -33,6 +34,30 @@ const StackNativeNavigator = ({ navigation }) => {
         options={({ navigation }) => ({
           headerShown: true,
           title: "Detail de l'offre",
+          headerLeft: ({ color, size }) => (
+            <Icon
+              name="chevron-left"
+              color={color}
+              size={36}
+              onPress={() => navigation.goBack()}
+            />
+          ),
+          headerRight: ({ color, size }) => (
+            <Icon
+              name="share"
+              type="material-community"
+              color={color}
+              size={24}
+            />
+          ),
+        })}
+      />
+      <Stack.Screen
+        name="GigDetail"
+        component={GigDetailScreen}
+        options={({ navigation }) => ({
+          headerShown: true,
+          title: "Detail de la tâche",
           headerLeft: ({ color, size }) => (
             <Icon
               name="chevron-left"
