@@ -41,7 +41,7 @@ const BottomTabNavigator = () => {
         }}
       />
       <Bottom.Screen
-        name="Gig Works"
+        name="Freelances"
         component={GigWorksScreen}
         options={{
           tabBarIcon: ({ color, size }) => (

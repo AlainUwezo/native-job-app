@@ -9,10 +9,10 @@ import useStatusBar from "../../hooks/useStatusBar";
 const JobsScreen = () => {
   const { candidateId } = useAppContext();
 
-  useStatusBar("dark-content");
+  useStatusBar("light-content");
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container]}>
       <ApplicationList candidateId={candidateId} />
     </View>
   );

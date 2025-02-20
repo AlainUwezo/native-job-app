@@ -24,7 +24,7 @@ const WorkRecommandation = ({ jobs, loading, error }) => {
           },
         ]}
       >
-        Nouveautés
+        Recommandations
       </Text>
       <Text
         style={[

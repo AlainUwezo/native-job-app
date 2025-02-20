@@ -1,137 +1,200 @@
-// src/screens/GigListScreen.tsx
-import React, { useState, useCallback } from "react";
-import {
-  FlatList,
-  Text,
-  TouchableOpacity,
-  View,
-  StyleSheet,
-} from "react-native";
-import { SearchBar } from "@rneui/themed";
-import { gigs } from "../../data/mockData";
-import { useNavigation } from "@react-navigation/native";
-
-// Fonction pour enlever les accents
-const removeAccents = (str) => {
-  return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-};
-
-// Fonction pour le debounce
-const useDebounce = (func, delay) => {
-  const [timer, setTimer] = useState(null);
-
-  const debouncedFunction = useCallback(
-    (...args) => {
-      if (timer) clearTimeout(timer);
-      const newTimer = setTimeout(() => func(...args), delay);
-      setTimer(newTimer);
-    },
-    [timer, func, delay]
-  );
-
-  return debouncedFunction;
-};
+import React, { useState } from "react";
+import { FlatList, Text, TextInput, View, StyleSheet } from "react-native";
+import { Button, Card, Icon } from "@rneui/themed";
+import AddGigModal from "./AddGigModal"; // Formulaire d'ajout de gig
+import { gigs as initialGigs } from "../../data/mockData";
+import { useTheme } from "../../theme/ThemeProvider";
 
 const GigList = () => {
-  const [search, setSearch] = useState("");
-  const [filteredGigs, setFilteredGigs] = useState(gigs);
-  const navigation = useNavigation();
+  const [gigs, setGigs] = useState(initialGigs);
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const { theme } = useTheme();
 
-  // Fonction pour rechercher les gigs
-  const handleSearch = (text) => {
-    setSearch(text);
-
-    const filtered = gigs.filter(
-      (gig) =>
-        removeAccents(gig.title.toLowerCase()).includes(
-          removeAccents(text.toLowerCase())
-        ) ||
-        removeAccents(gig.location.toLowerCase()).includes(
-          removeAccents(text.toLowerCase())
-        )
-    );
-
-    setFilteredGigs(filtered);
+  const handleAddGig = (newGig) => {
+    setGigs((prevGigs) => [
+      ...prevGigs,
+      { ...newGig, id: (prevGigs.length + 1).toString() },
+    ]);
   };
 
-  // Utilisation du debounce pour la recherche
-  const debouncedSearch = useDebounce(handleSearch, 500); // Délai de 500ms pour éviter les recherches trop fréquentes
-
-  const handleNavigateToDetail = (gig) => {
-    navigation.navigate("GigDetail", { gig });
-  };
+  const filteredGigs = gigs.filter((gig) =>
+    gig.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <View style={styles.container}>
-      {/* Search Bar */}
-      <SearchBar
-        placeholder="Rechercher un gig..."
-        onChangeText={debouncedSearch} // Utilisation de la recherche debouncée
-        value={search}
-        containerStyle={styles.searchBarContainer}
-        inputContainerStyle={styles.searchBarInput}
+      {/* Bouton Ajouter Gig */}
+      <Button
+        title=""
+        onPress={() => setModalVisible(true)}
+        buttonStyle={[
+          styles.addButton,
+          {
+            backgroundColor: theme.colors.primary,
+          },
+        ]}
+        containerStyle={styles.addButtonContainer}
+        icon={<Icon name="add-circle-outline" color="#fff" />}
       />
+      {/* Barre de recherche */}
+      <View
+        style={[
+          {
+            backgroundColor: theme.colors.primary,
+            paddingBottom: 20,
+            borderBottomRightRadius: 20,
+            borderBottomLeftRadius: 20,
+            paddingHorizontal: 15,
+          },
+        ]}
+      >
+        <View style={[styles.searchBarContainer]}>
+          <TextInput
+            placeholder="Rechercher un gig..."
+            placeholderTextColor="#999"
+            style={styles.searchInput}
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+          />
+          <Icon name="search" color="#666" style={styles.searchIcon} />
+        </View>
+      </View>
 
-      {/* Gig List */}
+      {/* Liste des Gigs */}
       <FlatList
         data={filteredGigs}
-        alwaysBounceVertical={false}
+        style={styles.gigs}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <TouchableOpacity
-            style={styles.gigItem}
-            onPress={() => handleNavigateToDetail(item)}
+          <Card
+            containerStyle={[
+              styles.card,
+              {
+                backgroundColor: theme.colors.backgroundSecondary,
+              },
+            ]}
           >
-            <Text style={styles.title}>{item.title}</Text>
-            <Text style={styles.location}>{item.location}</Text>
-            <Text style={styles.price}>{item.price}</Text>
-          </TouchableOpacity>
+            <Card.Title>{item.title}</Card.Title>
+            <Card.Divider />
+            <View style={styles.cardContent}>
+              <Icon name="location-on" color="#666" />
+              <Text style={styles.location}>{item.location}</Text>
+            </View>
+            <View style={styles.cardContent}>
+              <Icon name="description" color="#666" />
+              <Text style={styles.description}>{item.description}</Text>
+            </View>
+            <View style={styles.cardContent}>
+              <Icon name="attach-money" color="#666" />
+              <Text
+                style={[
+                  styles.price,
+                  {
+                    color: theme.colors.accent,
+                  },
+                ]}
+              >
+                ${item.price}
+              </Text>
+            </View>
+          </Card>
         )}
+        contentContainerStyle={styles.listContainer}
+      />
+
+      {/* Modal d'ajout de gig */}
+      <AddGigModal
+        isVisible={isModalVisible}
+        onClose={() => setModalVisible(false)}
+        onAddGig={handleAddGig}
       />
     </View>
   );
 };
 
+export default GigList;
+
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#f9f9f9",
   },
-  searchBarContainer: {
-    backgroundColor: "transparent",
-    borderTopWidth: 0,
-    borderBottomWidth: 0,
-    marginBottom: 8,
-    padding: 0,
+  addButtonContainer: {
+    position: "absolute",
+    bottom: 80,
+    right: 5,
     marginHorizontal: 15,
+    zIndex: 999,
   },
-  searchBarInput: {
-    backgroundColor: "#e0e0e0",
+  addButton: {
     borderRadius: 8,
-  },
-  gigItem: {
-    padding: 16,
-    marginHorizontal: 16,
-    marginVertical: 8,
-    backgroundColor: "#fff",
-    borderRadius: 8,
+    paddingVertical: 15,
+    paddingHorizontal: 30,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
     shadowOpacity: 0.1,
-    shadowRadius: 8,
+    shadowRadius: 5,
+    elevation: 4,
   },
-  title: {
-    fontSize: 18,
-    fontWeight: "bold",
+  listContainer: {
+    paddingBottom: 16,
+  },
+  card: {
+    borderColor: "#d5d5d5",
+    borderRadius: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    elevation: 3,
+  },
+  cardContent: {
+    flexDirection: "row",
+    flex: 1,
+    alignItems: "center",
+    marginVertical: 4,
+  },
+  gigs: {
+    paddingBottom: 60,
   },
   location: {
+    fontSize: 16,
+    color: "#333",
+    marginLeft: 8,
+  },
+  description: {
     fontSize: 14,
-    color: "#555",
+    color: "#666",
+    marginLeft: 8,
   },
   price: {
     fontSize: 16,
-    color: "#28a745",
     fontWeight: "600",
+    marginLeft: 8,
+  },
+  searchBarContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#fff",
+    borderRadius: 8,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 16,
+    color: "#333",
+    marginRight: 8,
+  },
+  searchIcon: {
+    marginLeft: 10,
   },
 });
-
-export default GigList;

@@ -1,3 +1,16 @@
+export const cities = [
+  "Kinshasa",
+  "Lubumbashi",
+  "Goma",
+  "Mbuji-Mayi",
+  "Bukavu",
+  "Kisangani",
+  "Kolwezi",
+  "Likasi",
+  "Matadi",
+  "Kananga",
+];
+
 export const JOBS = [
   {
     id: "1",
@@ -100,6 +113,21 @@ export const gigs = [
   },
   {
     id: "3",
+    title: "Rédacteur de contenu",
+    description: "Création de contenu SEO pour un blog technologique.",
+    price: "$500",
+    location: "À distance",
+  },
+  {
+    id: "4",
+    title: "Rédacteur de contenu",
+    description: "Création de contenu SEO pour un blog technologique.",
+    price: "$500",
+    location: "À distance",
+  },
+
+  {
+    id: "5",
     title: "Rédacteur de contenu",
     description: "Création de contenu SEO pour un blog technologique.",
     price: "$500",

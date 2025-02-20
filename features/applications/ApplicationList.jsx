@@ -11,7 +11,10 @@ import {
   Pressable,
   Alert,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import { getApplicationsByCandidateId } from "../../data-fetching/dataReading";
 import { useAppContext } from "../../contexts/AppContext";
@@ -20,6 +23,7 @@ import dayjs from "dayjs";
 import { ApplicationStatus } from "../../models/ApplicationStatus";
 import { getStatusText } from "../../utils";
 import { Icon } from "@rneui/themed";
+import { useTheme } from "../../theme/ThemeProvider";
 
 const ApplicationList = ({ candidateId }) => {
   const [applications, setApplications] = useState([]);
@@ -30,6 +34,8 @@ const ApplicationList = ({ candidateId }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation();
   const { isCandidate } = useAppContext();
+  const { theme } = useTheme();
+  const insets = useSafeAreaInsets();
 
   const fetchApplications = async () => {
     try {
@@ -84,7 +90,15 @@ const ApplicationList = ({ candidateId }) => {
   };
 
   const renderHeader = () => (
-    <View style={styles.header}>
+    <View
+      style={[
+        styles.header,
+        {
+          backgroundColor: theme.colors.primary,
+          paddingTop: insets.top,
+        },
+      ]}
+    >
       <Text style={styles.headerTitle}>Candidatures</Text>
       <Text style={styles.headerSubtitle}>
         Voir et gérer la liste de mes candidatures
@@ -113,6 +127,7 @@ const ApplicationList = ({ candidateId }) => {
         {
           borderColor: getStatusColor(item.status),
           borderWidth: 2,
+          marginHorizontal: 15,
         },
       ]}
     >
@@ -135,11 +150,11 @@ const ApplicationList = ({ candidateId }) => {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case "Accepted":
+      case "interview":
         return "#4CAF50";
-      case "Rejected":
+      case "rejected":
         return "#FF3B30";
-      case "Pending":
+      case "accepted":
         return "#FFC107";
       default:
         return "#007AFF";
@@ -165,7 +180,7 @@ const ApplicationList = ({ candidateId }) => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={[styles.container]}>
       <FlatList
         ListHeaderComponent={renderHeader}
         data={applications}
@@ -224,17 +239,16 @@ const ApplicationList = ({ candidateId }) => {
           </View>
         </View>
       </Modal>
-    </SafeAreaView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#f8f9fa",
+    backgroundColor: "#f8ffa",
     flex: 1,
   },
   header: {
-    backgroundColor: "#007AFF",
     paddingVertical: 20,
     paddingHorizontal: 15,
     borderBottomLeftRadius: 20,
@@ -266,9 +280,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginLeft: 8,
   },
-  listContent: {
-    padding: 10,
-  },
+  listContent: {},
   applicationItem: {
     backgroundColor: "#fff",
     padding: 15,
@@ -361,7 +373,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   deleteButton: {
-    backgroundColor: "#FF3B30",
+    backgroundColor: "rgb(216, 102, 102)",
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 8,
